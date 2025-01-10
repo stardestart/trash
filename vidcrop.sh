@@ -67,18 +67,22 @@ for (( i=0; i<"${#name[*]}"; i++ )); do
                                     case "$menuscreen" in
                                         "Обрезать и сохранить вверхнюю часть видеофайла.")
                                             ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:0 "${name[$i]%.*}_processed.mp4"
+                                            rm -rf "${name[$i]}"
                                             break
                                             ;;
                                         "Обрезать и сохранить центральную часть видеофайла.")
                                             ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:$(($diff / 2)) "${name[$i]%.*}_processed.mp4"
+                                            rm -rf "${name[$i]}"
                                             break
                                             ;;
                                         "Обрезать и сохранить нижнюю часть видеофайла.")
                                             ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:$diff "${name[$i]%.*}_processed.mp4"
+                                            rm -rf "${name[$i]}"
                                             break
                                             ;;
                                         "Оставить видеофайл вертикальным.")
                                             ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 "${name[$i]%.*}_processed.mp4"
+                                            rm -rf "${name[$i]}"
                                             break
                                             ;;
                                         *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"?\033[0m\033[32m";;
@@ -88,6 +92,7 @@ for (( i=0; i<"${#name[*]}"; i++ )); do
                                 ;;
                             "Нет.")
                                 ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 "${name[$i]%.*}_processed.mp4"
+                                rm -rf "${name[$i]}"
                                 break
                                 ;;
                             *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"?\033[0m\033[32m";;
@@ -95,6 +100,7 @@ for (( i=0; i<"${#name[*]}"; i++ )); do
                     done
                 else
                     ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 "${name[$i]%.*}_processed.mp4"
+                    rm -rf "${name[$i]}"
                 fi
                 break
                 ;;
