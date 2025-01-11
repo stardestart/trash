@@ -48,11 +48,14 @@ for (( i=0; i<"${#name[*]}"; i++ )); do
     fi
 # Открытие видеофайла
     xdg-open "${name[$i]}" &> /dev/null &
+#Создание каталога
+    mkdir ./processed
     PS3="$(echo -e ">")"
     select menudel in "Обработать и сохранить." "Пропустить."; do
         case "$menudel" in
             "Обработать и сохранить.")
                 echo "$w x $h ${name[$i]} - $r"
+                name_processed="${name[$i]#*.}"
                 if [[ "$r" == "-90" || "$r" == "90" || "$w" -lt "$h" ]]; then
                     echo -e "\033[41m\033[30mВертикальное видео?\033[0m\033[32m"
                     PS3="$(echo -e ">")"
@@ -63,19 +66,19 @@ for (( i=0; i<"${#name[*]}"; i++ )); do
                                 select menuscreen in "Обрезать и сохранить вверхнюю часть видеофайла." "Обрезать и сохранить центральную часть видеофайла." "Обрезать и сохранить нижнюю часть видеофайла." "Оставить видеофайл вертикальным."; do
                                     case "$menuscreen" in
                                         "Обрезать и сохранить вверхнюю часть видеофайла.")
-                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:0 "${name[$i]%.*}_processed.mp4"
+                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:0 ./processed"${name_processed%.*}_processed.mp4"
                                             break
                                             ;;
                                         "Обрезать и сохранить центральную часть видеофайла.")
-                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:$(($diff / 2)) "${name[$i]%.*}_processed.mp4"
+                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:$(($diff / 2)) ./processed"${name_processed%.*}_processed.mp4"
                                             break
                                             ;;
                                         "Обрезать и сохранить нижнюю часть видеофайла.")
-                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:$diff "${name[$i]%.*}_processed.mp4"
+                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 -vf crop=iw:iw:0:$diff ./processed"${name_processed%.*}_processed.mp4"
                                             break
                                             ;;
                                         "Оставить видеофайл вертикальным.")
-                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 "${name[$i]%.*}_processed.mp4"
+                                            ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 ./processed"${name_processed%.*}_processed.mp4"
                                             break
                                             ;;
                                         *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"?\033[0m\033[32m";;
@@ -84,14 +87,14 @@ for (( i=0; i<"${#name[*]}"; i++ )); do
                                 break
                                 ;;
                             "Нет.")
-                                ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 "${name[$i]%.*}_processed.mp4"
+                                ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 ./processed"${name_processed%.*}_processed.mp4"
                                 break
                                 ;;
                             *) echo -e "\033[41m\033[30mЧто значит - "$REPLY"?\033[0m\033[32m";;
                         esac
                     done
                 else
-                    ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 "${name[$i]%.*}_processed.mp4"
+                    ffmpeg -i "${name[$i]}" -c:v hevc_nvenc -qp 25 -preset slow -map_metadata -1 -c:a ac3 ./processed"${name_processed%.*}_processed.mp4"
                 fi
                 break
                 ;;
